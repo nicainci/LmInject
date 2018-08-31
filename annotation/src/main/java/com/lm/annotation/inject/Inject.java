@@ -8,10 +8,13 @@ import java.lang.annotation.Target;
 /**
  * @Author WWC
  * @Create 2018/8/30
- * @Description 把字段注入某个地方的注解
+ * @Description 注入注解
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.SOURCE)
 public @interface Inject {
+    /**
+     * 供应注解提供的供应名
+     */
     String provideName();
 }

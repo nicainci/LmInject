@@ -9,5 +9,8 @@ import com.lm.annotation.provide.Provide;
  */
 public class MainProvide {
     @Provide(provideName = "userName")
-    String userName = "123456";
+    String userName = "root";
+
+    @Provide(provideName = "pwd")
+    String pwd ="asd123456";
 }

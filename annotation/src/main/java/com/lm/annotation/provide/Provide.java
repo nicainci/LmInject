@@ -8,10 +8,13 @@ import java.lang.annotation.Target;
 /**
  * @Author WWC
  * @Create 2018/8/30
- * @Description 提供给其他地方使用这个字段的注解
+ * @Description 供应注解
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.SOURCE)
 public @interface Provide {
+    /**
+     * 供应名
+     */
     String provideName();
 }
