@@ -6,8 +6,6 @@ import android.widget.TextView;
 
 import com.lm.annotation.inject.Inject;
 import com.lm.annotation.inject.InjectorHelper;
-import com.lm.annotation.inject.Injectors;
-import com.lm.annotation.provide.Providers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -50,7 +48,6 @@ public class MainActivity extends AppCompatActivity {
     double[] doubleArray;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,8 +55,8 @@ public class MainActivity extends AppCompatActivity {
 
         final TextView tv = findViewById(R.id.tv);
 
-        InjectorHelper.inject(this, new UserNameProvide());
-        InjectorHelper.inject(this, new PasswordProvide());
+        InjectorHelper.inject(this, new AProvide());
+        InjectorHelper.inject(this, new BProvide());
 
         String text = new StringBuilder()
                 .append("string = ").append(string).append("\n")

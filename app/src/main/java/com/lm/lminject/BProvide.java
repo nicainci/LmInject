@@ -8,10 +8,10 @@ import java.util.List;
 /**
  * @Author WWC
  * @Create 2018/10/18
- * @Description 描述
+ * @Description B供应器
  * Copyright(c) 2017, Zhejiang Yunbo Technology Co.,Ltd. All rights reserved
  */
-public class UserNameProvide {
+public class BProvide {
     @Provide(provideName = "string")
     String string = "str";
     @Provide(provideName = "stringArray")
