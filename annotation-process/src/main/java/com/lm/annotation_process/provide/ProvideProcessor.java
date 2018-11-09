@@ -3,13 +3,10 @@ package com.lm.annotation_process.provide;
 import com.google.auto.service.AutoService;
 import com.lm.annotation.provide.Provide;
 import com.lm.annotation.provide.Provider;
-import com.lm.annotation.provide.Providers;
 import com.lm.annotation_process.utils.BaseProcessor;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
-import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,7 +19,6 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.Modifier;
 import javax.lang.model.element.TypeElement;
-import javax.tools.Diagnostic;
 
 /**
  * @Author WWC
@@ -34,41 +30,22 @@ import javax.tools.Diagnostic;
 @AutoService(Processor.class)
 public class ProvideProcessor extends BaseProcessor {
 
-    private String mPackage;
-
-    private String mClassName = "ProvidersInitClass";
-
     @Override
     protected void onProcess(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
         Map<TypeElement, List<Element>> classMap = sortElementFromRoundEnv(roundEnv, Provide.class);
 
-        TypeSpec.Builder providersInitClassBuilder = TypeSpec.classBuilder(mClassName)
-                .addModifiers(Modifier.PUBLIC)
-                .addModifiers(Modifier.FINAL);
-
-        MethodSpec.Builder providersInitClassInitMethod = MethodSpec.methodBuilder("init")
-                .addModifiers(Modifier.PUBLIC)
-                .addModifiers(Modifier.STATIC)
-                .addModifiers(Modifier.FINAL);
-
         for (Map.Entry<TypeElement, List<Element>> entry : classMap.entrySet()) {
-            if (mPackage == null) {
-                mPackage = getPackageName(entry.getKey());
-            }
-            TypeName[] typeNames = buildProviderClass(entry);
-            providersInitClassInitMethod.addStatement("$T.put($T.class, new $T())", Providers.class, typeNames[0], typeNames[1]);
+            buildProviderClass(entry);
         }
-
-        providersInitClassBuilder.addMethod(providersInitClassInitMethod.build());
-        writeClassFile(mPackage, mClassName, providersInitClassBuilder);
-
-        logNote("START 自动生成ProvidersInitClass " + mPackage + " " + mClassName);
-        logNote("\n" + providersInitClassBuilder.build().toString());
-        logNote("END 自动生成ProvidersInitClass " + mPackage + " " + mClassName);
     }
 
-    private TypeName[] buildProviderClass(Map.Entry<TypeElement, List<Element>> entry) {
+    /**
+     * 自动生成Provider
+     *
+     * @param entry key=AProvide  value=List
+     */
+    private void buildProviderClass(Map.Entry<TypeElement, List<Element>> entry) {
         TypeElement rootClassTypeElement = entry.getKey();
         String className = rootClassTypeElement.getSimpleName() + "Provider";
         String packageName = getPackageName(rootClassTypeElement);
@@ -203,11 +180,6 @@ public class ProvideProcessor extends BaseProcessor {
 
         logNote("\n" + classBuilder.build().toString());
         logNote("END 自动生成Provider " + packageName + " " + className);
-
-        TypeName[] resultTypeName = new TypeName[2];
-        resultTypeName[0] = getTypeName(rootClassTypeElement);
-        resultTypeName[1] = getTypeVariableName(className);
-        return resultTypeName;
     }
 
 }

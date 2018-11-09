@@ -3,11 +3,9 @@ package com.lm.annotation_process.inject;
 import com.google.auto.service.AutoService;
 import com.lm.annotation.inject.Inject;
 import com.lm.annotation.inject.Injector;
-import com.lm.annotation.inject.Injectors;
 import com.lm.annotation.provide.ProviderHelper;
 import com.lm.annotation_process.utils.BaseProcessor;
 import com.squareup.javapoet.MethodSpec;
-import com.squareup.javapoet.TypeName;
 import com.squareup.javapoet.TypeSpec;
 
 import java.util.List;
@@ -33,47 +31,22 @@ import javax.lang.model.element.TypeElement;
 @AutoService(Processor.class)
 public class InjectProcessor extends BaseProcessor {
 
-    private String mPackage;
-
-    private String mClassName = "InjectorsInitClass";
-
     @Override
     protected void onProcess(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
 
         Map<TypeElement, List<Element>> classMap = sortElementFromRoundEnv(roundEnv, Inject.class);
 
-        TypeSpec.Builder injectorsInitClassBuilder = TypeSpec.classBuilder(mClassName)
-                .addModifiers(Modifier.PUBLIC)
-                .addModifiers(Modifier.FINAL);
-
-        MethodSpec.Builder injectorsInitClassInitMethod = MethodSpec.methodBuilder("init")
-                .addModifiers(Modifier.PUBLIC)
-                .addModifiers(Modifier.STATIC)
-                .addModifiers(Modifier.FINAL);
-
         for (Map.Entry<TypeElement, List<Element>> entry : classMap.entrySet()) {
-            if (mPackage == null) {
-                mPackage = getPackageName(entry.getKey());
-            }
-            TypeName[] typeNames = buildInjectorClass(entry);
-            injectorsInitClassInitMethod.addStatement("$T.put($T.class, new $T())", Injectors.class, typeNames[0], typeNames[1]);
+            buildInjectorClass(entry);
         }
-
-        injectorsInitClassBuilder.addMethod(injectorsInitClassInitMethod.build());
-        writeClassFile(mPackage, mClassName, injectorsInitClassBuilder);
-
-        logNote("START 自动生成InjectorsInitClass " + mPackage + " " + mClassName);
-        logNote("\n" + injectorsInitClassBuilder.build().toString());
-        logNote("END 自动生成InjectorsInitClass " + mPackage + " " + mClassName);
     }
 
     /**
      * 自动生成Injector
      *
      * @param entry key=MainActivity  value=List
-     * @return TypeName[0] = MainActivity TypeName[1] = MainActivityInjector
      */
-    private TypeName[] buildInjectorClass(Map.Entry<TypeElement, List<Element>> entry) {
+    private void buildInjectorClass(Map.Entry<TypeElement, List<Element>> entry) {
 
         TypeElement rootClassTypeElement = entry.getKey();
         String packageName = getPackageName(rootClassTypeElement);
@@ -143,10 +116,5 @@ public class InjectProcessor extends BaseProcessor {
         logNote("\n" + classBuilder.build().toString());
 
         logNote("END 自动生成Injector" + packageName + " " + className);
-
-        TypeName[] resultTypeName = new TypeName[2];
-        resultTypeName[0] = getTypeName(rootClassTypeElement);
-        resultTypeName[1] = getTypeVariableName(className);
-        return resultTypeName;
     }
 }
