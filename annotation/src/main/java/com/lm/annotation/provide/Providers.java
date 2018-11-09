@@ -16,6 +16,41 @@ public class Providers {
      */
     public static final Provider DEFAULT = new Provider() {
         @Override
+        public int getInt(Object providerObject, String provideName) {
+            return 0;
+        }
+
+        @Override
+        public long getLong(Object providerObject, String provideName) {
+            return 0;
+        }
+
+        @Override
+        public char getChar(Object providerObject, String provideName) {
+            return 0;
+        }
+
+        @Override
+        public byte getByte(Object providerObject, String provideName) {
+            return 0;
+        }
+
+        @Override
+        public boolean getBoolean(Object providerObject, String provideName) {
+            return false;
+        }
+
+        @Override
+        public float getFloat(Object providerObject, String provideName) {
+            return 0;
+        }
+
+        @Override
+        public double getDouble(Object providerObject, String provideName) {
+            return 0;
+        }
+
+        @Override
         public Object get(Object providerClass, String provideName) {
             return null;
         }

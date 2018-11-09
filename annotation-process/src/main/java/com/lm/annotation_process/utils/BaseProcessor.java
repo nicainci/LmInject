@@ -155,6 +155,10 @@ public abstract class BaseProcessor extends AbstractProcessor {
         return TypeName.get(typeUtils.erasure(element.asType()));
     }
 
+    public boolean isElementEquals(Element element, Class<?> clazz) {
+        return getTypeName(element).toString().equals(clazz.getName());
+    }
+
     /**
      * 获取注解元素的外围元素类型
      * 例如MainActivity中有个字段String str;被注解了
